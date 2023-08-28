@@ -1,24 +1,58 @@
-import logging
+"""Send event to Event Hub.
 
-import azure.functions as func
+Paswordless authentication and authorization according to MS docs:
+https://learn.microsoft.com/en-us/azure/event-hubs/
+event-hubs-python-get-started-send?tabs=passwordless%2Croles-azure-portal
+#authenticate-the-app-to-azure
 
+Functions:
+    run: Asynchronous function to send messages to Event Hub.
+"""
 
-def main(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info('Python HTTP trigger function processed a request.')
+import asyncio
+import sys
+from os import environ as env
 
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
+from azure.eventhub import EventData
+from azure.eventhub.aio import EventHubProducerClient
+from azure.identity.aio import DefaultAzureCredential
 
-    if name:
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
-    else:
-        return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
-        )
+EVENT_HUB_FULLY_QUALIFIED_NAMESPACE = env.get("EVENTHUB_NAMESPACE")
+EVENT_HUB_NAME = env.get("EVENTHUB_NAME")
+
+credential = DefaultAzureCredential()
+
+async def run(event: str | bytes) -> None:
+    """Create a producer client to send messages to the event hub
+
+    Method from MS doc: https://learn.microsoft.com/en-us/azure/event-hubs/
+    event-hubs-python-get-started-send?tabs=passwordless%2Croles-azure-portal#send-events
+
+    Args:
+        event: Event to send to Event Hub.
+    """
+
+    producer = EventHubProducerClient(
+        fully_qualified_namespace=EVENT_HUB_FULLY_QUALIFIED_NAMESPACE,
+        eventhub_name=EVENT_HUB_NAME,
+        credential=credential,
+    )
+    async with producer:
+        # Create a batch.
+        event_data_batch = await producer.create_batch()
+
+        # Add events to the batch.
+        event_data_batch.add(EventData(event))
+
+        # Send the batch of events to the event hub.
+        await producer.send_batch(event_data_batch)
+
+        # Close credential when no longer needed.
+        await credential.close()
+
+# Workaround to bug https://github.com/encode/httpx/issues/914
+if sys.platform.startswith("win"):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+if __name__ == "main":
+    asyncio.run(run("Event"))
