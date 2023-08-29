@@ -6,7 +6,7 @@ from datetime import datetime
 
 import azure.functions as func
 
-from .connection_config import container_pbi_push_dataset_raw_data
+from shared.connection_config import container_pbi_push_dataset_raw_data
 
 
 def main(events: List[func.EventHubEvent]):
