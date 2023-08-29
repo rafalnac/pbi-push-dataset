@@ -1,7 +1,7 @@
 """Get events from Event Hub, sink them to blob container and sent to PBI push dataset."""
 
-from typing import List
 import logging
+from typing import List
 from datetime import datetime
 
 import azure.functions as func
