@@ -1,6 +1,8 @@
 """Send event to Event Hub.
 
-Paswordless authentication and authorization according to MS docs:
+The purpose of the module is to simulate event sending to Event Hub.
+
+Paswordless authentication and authorization configured according to:
 https://learn.microsoft.com/en-us/azure/event-hubs/
 event-hubs-python-get-started-send?tabs=passwordless%2Croles-azure-portal
 #authenticate-the-app-to-azure
@@ -50,7 +52,7 @@ async def run(event: str | bytes) -> None:
         # Close credential when no longer needed.
         await credential.close()
 
-# Workaround to bug https://github.com/encode/httpx/issues/914
+# Workaround to issue https://github.com/encode/httpx/issues/914
 if sys.platform.startswith("win"):
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
