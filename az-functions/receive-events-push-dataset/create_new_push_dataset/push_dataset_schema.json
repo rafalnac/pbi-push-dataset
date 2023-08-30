@@ -1,0 +1,50 @@
+{
+    "name": "RandomWeather",
+    "defaultMode": "Push",
+    "tables": [
+        {
+            "name": "Table",
+            "columns": [
+                {
+                    "name": "date",
+                    "dataType": "dateTime",
+                    "formatString": "General Date"
+                },
+                {
+                    "name": "City",
+                    "dataType": "string"
+                },
+                {
+                    "name": "Temperature",
+                    "dataType": "int64",
+                    "formatString": "0"
+                },
+                {
+                    "name": "Humidity",
+                    "dataType": "int64",
+                    "formatString": "0"
+                },
+                {
+                    "name": "Wind Speed",
+                    "dataType": "int64",
+                    "formatString": "0"
+                },
+                {
+                    "name": "Precipitation",
+                    "dataType": "int64",
+                    "formatString": "0"
+                },
+                {
+                    "name": "Pressure",
+                    "dataType": "int64",
+                    "formatString": "0"
+                },
+                {
+                    "name": "UV Index",
+                    "dataType": "int64",
+                    "formatString": "0"
+                }
+            ]
+        }
+    ]
+}
