@@ -13,4 +13,4 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     asyncio.run(run(event=event_to_send))
     logging.info(f"Sent event: {event_to_send}")
 
-    return func.HttpResponse.status_code(200)
+    return func.HttpResponse("Request processed successfuly.", status_code=200)
