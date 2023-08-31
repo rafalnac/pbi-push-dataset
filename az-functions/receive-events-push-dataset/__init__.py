@@ -36,9 +36,23 @@ def main(events: List[func.EventHubEvent]):
         event_body = event.get_body().decode("utf-8")
         logging.info(f"Python EventHub trigger processed an event: \n {event_body}")
 
-        # Sent event body to container in json format
+        # Send event body to container in json format
         container_pbi_push_dataset_raw_data.upload_blob(
             name=f"export_{datetime.utcnow()}.json",
             data=event_body,
             blob_type="BlockBlob",
         )
+
+        # Create event ready to be sent to PBI Push Dataset
+        event_to_send = workspace.convert_event_to_push(event_body)
+        logging.info(event_to_send)
+        with open("sample.txt", "w") as file:
+            file.write(event_to_send)
+
+        # Send event to Power BI Push Dataset
+        status_code = workspace.push_rows_to_dataset_table(
+            dataset_name="RandomWeather",
+            table_name="Table",
+            rows=event_to_send
+        )
+        logging.info(f"Status code: {status_code}")
