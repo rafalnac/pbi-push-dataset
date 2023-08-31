@@ -126,21 +126,29 @@ class Workspace:
         datasets_list = [attr.get("name") for attr in response_object_json.get("value")]
         return datasets_list
 
-    def is_dataset_in_workspace(self, dataset: Any) -> bool:
+    def is_dataset_in_workspace(
+        self, dataset: Any = None, dataset_name: str = None
+    ) -> bool:
         """Check if provided push dataset exists in workspace.
 
         Check is based on the 'Name' attribute in dataset.
+        If dataset_name attribute is provided, dataset is ommitted.
 
         Args:
             dataset: Tabular model as JSON object.
+            dataset_name: Name of the dataset.
 
         Returns:
             True if dataset exist in workspace, otherwise False.
         """
 
+        if dataset_name is not None:
+            dataset_name_to_check = dataset_name
+        else:
+            dataset_name_to_check = self.get_name_of_dataset(dataset)
+
         names_existing_datasets = self.get_datasets()
-        name_new_dataset_to_upload = self.get_name_of_dataset(dataset)
-        return name_new_dataset_to_upload in names_existing_datasets
+        return dataset_name_to_check in names_existing_datasets
 
     def create_push_dataset(self, dataset: Any) -> HTTPStatus:
         """Create new power bi push dataset.
