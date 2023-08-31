@@ -73,15 +73,39 @@ class Workspace:
 
         return dataset.get("name")
 
-    @staticmethod
-    def get_id_of_dataset(dataset: Any) -> str:
-        """Retrieve id of the dataset from tabular model.
+    def get_id_of_dataset(self, dataset_name: str) -> str:
+        """Retrieve id of the exising dataset in Power BI workspace.
 
         Args:
-            dataset: Tabular model as JSON object.
+            dataset: Name of exising dataset in Power BI workspace.
+
+        Retuns:
+            Id of dataset with provided name.
+
+        Raises:
+            ValueError if dataset with provided name does not exists.
+            TypeError if dataset_name is not a strig type
         """
 
-        return dataset.get("id")
+        if not isinstance(dataset_name, str):
+            raise TypeError(
+                f"Argument dataset_name must be a string, {type(dataset_name)} provided."
+            )
+        if not self.is_dataset_in_workspace(dataset_name=dataset_name):
+            raise ValueError(
+                f"Provided dataset name: {dataset_name}, does not exist in workspace."
+            )
+
+        datasets_response = self._get_dataset_response()
+        dataset_response_list_dict = [
+            attr for attr in datasets_response.json().get("value")
+        ]
+
+        for dictionary in dataset_response_list_dict:
+            for key, value in dictionary.items():
+                if value == "RandomWeather":
+                    dataset_id = dictionary.get("id")
+        return dataset_id
 
     def _get_dataset_response(self):
         """Retunrs Response object with datasets from workspace"""
@@ -129,6 +153,7 @@ class Workspace:
         Returns:
             Status code from Response object.
         """
+
         response = requests.post(
             url=self.pbi_api_group_dataset,
             json=dataset,
