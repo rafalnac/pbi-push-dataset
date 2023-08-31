@@ -20,7 +20,9 @@ def main(events: List[func.EventHubEvent]):
     workspace = Workspace(
         workspace_id=PUSH_DATASET_PBI_WORKSPACE_ID, headers=PBI_REQUESTS_HEADERS
     )
-    dataset_path = Path(__file__).with_name("push_dataset_schema.json")
+    dataset_path = (
+        Path(__file__).parent / "create_new_push_dataset/push_dataset_schema.json"
+    )
 
     # Load tabular model as JSON file and convert in to JSON object.
     dataset = Workspace.load_file_to_json_object(dataset_path)
@@ -40,8 +42,3 @@ def main(events: List[func.EventHubEvent]):
             data=event_body,
             blob_type="BlockBlob",
         )
-
-        
-
-
-
