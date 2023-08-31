@@ -45,6 +45,25 @@ class Workspace:
         return json_object
 
     @staticmethod
+    def convert_event_to_push(event: str) -> Any:
+        """Convert captured event to JSON object.
+
+        Converted according to required schema:
+        https://learn.microsoft.com/en-us/rest/api/power-bi
+        /push-datasets/datasets-post-rows-in-group#example
+
+        Args:
+            event: JSON string.
+
+        Returns:
+            JSON object.
+        """
+
+        new_dict = {}
+        new_dict["rows"] = [json.loads(event)]
+        return json.dumps(new_dict)
+
+    @staticmethod
     def get_name_of_dataset(dataset: Any) -> str:
         """Retrieve name of the dataset from tabular model.
 
@@ -115,6 +134,28 @@ class Workspace:
             json=dataset,
             headers=self.headers,
         )
+        return response.status_code
+
+    def push_rows_to_dataset_table(
+        self, dataset_name: str, table_name: str, rows: Any
+    ) -> HTTPStatus:
+        """Push rows to exsing power bi push dataset.
+
+        Args:
+            dataset_name: Name of the existing dataset in workspace.
+            rows: Rows to add.
+
+        Returns:
+            Status code from Response object.
+        """
+
+        dataset_id = self.get_id_of_dataset(dataset_name=dataset_name)
+        push_rows_pbi_api = (
+            f"https://api.powerbi.com/v1.0/myorg/groups/{self.workspace_id}"
+            f"/datasets/{dataset_id}/tables/{table_name}/rows"
+        )
+
+        response = requests.post(url=push_rows_pbi_api, data=rows, headers=self.headers)
         return response.status_code
 
 
