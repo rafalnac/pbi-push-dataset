@@ -1,7 +1,7 @@
 """Get access token."""
 
 from msal import ConfidentialClientApplication
-from connection_config import (
+from .connection_config import (
     AUTHORITY_URL,
     POWER_BI_REST_API_CLIENT_ID,
     POWER_BI_REST_API_CLIENT_SECRET,

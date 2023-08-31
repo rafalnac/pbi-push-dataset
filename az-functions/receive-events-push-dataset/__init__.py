@@ -6,9 +6,9 @@ from pathlib import Path
 from typing import List
 
 import azure.functions as func
-from create_new_push_dataset.create_pbi_push_dataset import Workspace
-from create_new_push_dataset.get_pbi_access_token import PBI_REQUESTS_HEADERS
-from create_new_push_dataset.connection_config import (
+from .create_new_push_dataset.create_pbi_push_dataset import Workspace
+from .create_new_push_dataset.get_pbi_access_token import PBI_REQUESTS_HEADERS
+from .create_new_push_dataset.connection_config import (
     PUSH_DATASET_PBI_WORKSPACE_ID,
     container_pbi_push_dataset_raw_data,
 )
