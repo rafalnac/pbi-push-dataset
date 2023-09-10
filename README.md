@@ -6,7 +6,7 @@ It has been inspired based on the solution provided by [SQLBI](https://youtu.be/
 
 The main focus of the project and its first phase is to develop a solution from the backend side, which has not been covered extensively in the mentioned solution.
 
-### The initial architecture of the solution and how the application works:
+### Architecture of the solution and how the application works:
 
 1. Send data to Azure Event Hub.
 2. Reveive data from Azure Event Hub.
